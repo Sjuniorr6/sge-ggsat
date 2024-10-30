@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<div class="container mt-4">
+    <h3 class="display-4">Editar</h3>
+    <div class="card">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.as_p }}
+                </div>
+                {{ imagens_formset.management_form }}
+                <div id="fields-container">
+                    {% for form in imagens_formset %}
+                        <div class="form-group">
+                            {{ form.as_p }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-secondary mt-3" onclick="addField()">Adicionar Campo</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+    <a href="{% url 'entradasListView' %}" class="btn btn-secondary mt-3">Voltar</a>
+</div>
+
+<script>
+
+
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            e.preventDefault(); // Bloqueia a tecla Enter
+        }
+    });
+
+    document.addEventListener("input", function(e) {
+        var input = e.target;
+        var value = input.value;
+        var patterns = ["35154", "35642", "86590", "86325"];
+
+        var quantidade = 0;
+
+        patterns.forEach(function(pattern) {
+            var count = (value.match(new RegExp(pattern, "g")) || []).length;
+            if (count > 0) {
+                console.log("Padrão detectado: " + pattern + " - " + count + " vezes"); // Log para depuração
+                value = value.replace(new RegExp(pattern, "g"), "     "); // Substitui o padrão por 5 espaços
+                quantidade += count; // Incrementa a quantidade
+            }
+        });
+
+        // Remove o último número a cada 10 números inteiros e adiciona 5 espaços
+        var regex = /(\d{9})(\d)/g;
+        value = value.replace(regex, function(match, p1, p2) {
+            return p1 + "     "; // Remove o último número e adiciona 5 espaços
+        });
+
+        input.value = value; // Atualiza o valor do campo de entrada
+
+        // Atualiza o campo oculto de quantidade
+        document.getElementById("quantidade").value = quantidade;
+        console.log("Quantidade total de padrões encontrados: " + quantidade); // Log para depuração
+    });
+
+
+
+
+    function addField() {
+        const container = document.getElementById('fields-container');
+        const totalForms = document.getElementById('id_imagens-TOTAL_FORMS');
+        const currentFormCount = parseInt(totalForms.value);
+        const newFormCount = currentFormCount + 1;
+        totalForms.value = newFormCount;
+
+        const newField = document.createElement('div');
+        newField.classList.add('form-group');
+        newField.innerHTML = `
+            <div class="form-group">
+                <label for="id_imagens-${currentFormCount}-imagem">Imagem:</label>
+                <input type="file" name="imagens-${currentFormCount}-imagem" class="form-control" id="id_imagens-${currentFormCount}-imagem" required>
+            </div>
+            <div class="form-group">
+                <label for="id_imagens-${currentFormCount}-descricao">Descrição:</label>
+                <input type="text" name="imagens-${currentFormCount}-descricao" class="form-control" id="id_imagens-${currentFormCount}-descricao" required>
+            </div>
+            <div class="form-group">
+                <label for="id_imagens-${currentFormCount}-setorid">Setor ID:</label>
+                <select name="imagens-${currentFormCount}-setorid" class="form-control" id="id_imagens-${currentFormCount}-setorid" required>
+                    <option value="expedicao">expedicao</option>
+                    <option value="Manutenção">Manutenção</option>
+                    <option value="configuração">configuração</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="id_imagens-${currentFormCount}-tipo_problema">Tipo de Problema:</label>
+                <select name="imagens-${currentFormCount}-tipo_problema" class="form-control" id="id_imagens-${currentFormCount}-tipo_problema" required>
+                    <option value="Oxidação">Oxidação</option>
+                    <option value="Placa Danificada">Placa Danificada</option>
+                    <option value="Placa danificada SEM CUSTO">Placa danificada SEM CUSTO</option>
+                    <option value="USB Danificado">USB Danificado</option>
+                    <option value="USB Danificado SEM CUSTO">USB Danificado SEM CUSTO</option>
+                    <option value="Botão de acionamento Danificado">Botão de acionamento Danificado</option>
+                    <option value="Botão de acionamento Danificado SEM CUSTO">Botão de acionamento Danificado SEM CUSTO</option>
+                    <option value="Antena LoRa Danificada">Antena LoRa Danificada</option>
+                    <option value="Sem problemas Identificados">Sem problemas Identificados</option>
+                </select>
+            </div>
+        `;
+        container.appendChild(newField);
+    }
+</script>
+{% endblock %}

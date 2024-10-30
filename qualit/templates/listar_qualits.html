@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #45494E; /* Cor de fundo mais escura */
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        margin: 0;
+    }
+    .container-fluid {
+        padding: 0;
+    }
+    .row {
+        margin: 0;
+    }
+    .table-responsive {
+        padding: 0 15px;
+        margin-left: -55vh;
+        width: 160rem;
+    }
+    .form-control {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .dropdown-status {
+        width: 10rem; /* Ajuste a largura conforme necessário */
+    }
+    .filter-container {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0rem; /* Aumente o espaçamento entre os campos */
+    }
+    .thead-dark {
+        background-color: #344038; /* Substitua pelo valor exato da cor da sua barra de navegação */
+        color: white;
+    }
+    .texto {
+        text-align: center; /* Centraliza o texto */
+        color: rgb(10, 10, 10); /* Define a cor do texto como branco */
+    }
+</style>
+<br>
+<br>
+<br>
+<div class="container mt-5">
+    <div class="texto">
+        <h2>Consulta de ID</h2>
+    </div>
+
+    </div>
+    <form method="GET" action="">
+        <div class="row mb-3">
+            <div class="col">
+                <input type="text" name="id_equipamento" class="form-control" placeholder="ID Equipamento" value="{{ request.GET.id_equipamento }}">
+            </div>
+            <div class="col">
+                <input type="text" name="iccid_novo" class="form-control" placeholder="ICCID Novo" value="{{ request.GET.iccid_novo }}">
+            </div>
+            <div class="col">
+                <input type="text" name="cliente" class="form-control" placeholder="Cliente" value="{{ request.GET.cliente }}">
+            </div>
+            <div class="col">
+                <button class="btn btn btn-primary" type="submit">Filtrar</button>
+            </div>
+        </div>
+    </form>
+    {% if request.GET.id_equipamento or request.GET.iccid_novo or request.GET.cliente %}
+    {% if qualits %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nº</th>
+                    <th>Data</th>
+                    <th>Número Requisição</th>
+                    <th>Tipo de Pedido</th>
+                    <th>Comercial</th>
+                    <th>Cliente</th>
+                    <th>IMEI</th>
+                    <th>ID</th>
+                    <th>Device ID</th>
+                    <th>ICCID Novo</th>
+                    <th>Contrato</th>
+                    <th>Modelo</th>
+                    <th>TP</th>
+                    <th>Operadora</th>
+                    <th>Observações</th>
+                    <th>Usuário</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for qualit in qualits %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ qualit.data }}</td>
+                    <td>{{ qualit.numero_requisicao }}</td>
+                    <td>{{ qualit.tipo_pedido }}</td>
+                    <td>{{ qualit.comercial }}</td>
+                    <td>{{ qualit.cliente }}</td>
+                    <td>{{ qualit.imei }}</td>
+                    <td>{{ qualit.id_equipamento }}</td>
+                    <td>{{ qualit.device_id }}</td>
+                    <td>{{ qualit.iccid_novo }}</td>
+                    <td>{{ qualit.contrato }}</td>
+                    <td>{{ qualit.modelo }}</td>
+                    <td>{{ qualit.tp }}</td>
+                    <td>{{ qualit.operadora }}</td>
+                    <td>{{ qualit.observacoes }}</td>
+                    <td>{{ qualit.usuario }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>Nenhum resultado encontrado.</p>
+    {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

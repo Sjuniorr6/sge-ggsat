@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h3 class="display-4">Reativação </h3>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post" class="form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h4 class="card-title">Formulario de Reativação</h4>
+                {{ reativacao_form.as_p }}
+                
+                <h4 class="card-title mt-4">Adicionar Equipamentos</h4>
+                <div id="equipamento-forms">
+                    {{ id_iccid_formset.management_form }}
+                    <input type="hidden" name="id_iccid_set-TOTAL_FORMS" id="id_iccid_set-TOTAL_FORMS" value="{{ id_iccid_formset.total_form_count }}">
+                </div>
+                <button type="button" class="btn btn-secondary" id="add-equipamento">Adicionar Equipamento</button>
+                <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('add-equipamento').addEventListener('click', function() {
+        var equipamentoForms = document.getElementById('equipamento-forms');
+        var totalForms = document.querySelector("#id_iccid_set-TOTAL_FORMS");
+        var formNum = parseInt(totalForms.value); // Número de formulários já adicionados
+        var newForm = document.createElement('div');
+        newForm.classList.add('row', 'equipamento-form');
+        newForm.innerHTML = `
+            <div class="col-md-6 mb-3">
+                <label for="id_idiccid_set-${formNum}-id_equipamentos" class="form-label">ID Equipamento</label>
+                <input type="text" name="id_idiccid_set-${formNum}-id_equipamentos" class="form-control" id="id_idiccid_set-${formNum}-id_equipamentos" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="id_idiccid_set-${formNum}-ccid_equipamentos" class="form-label">ICCID Equipamento</label>
+                <input type="text" name="id_idiccid_set-${formNum}-ccid_equipamentos" class="form-control" id="id_idiccid_set-${formNum}-ccid_equipamentos" required>
+            </div>
+        `;
+        equipamentoForms.appendChild(newForm);
+        totalForms.value = formNum + 1;
+    });
+});
+</script>
+{% endblock %}

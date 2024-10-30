@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lista de Paradas</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Embarcador</th>
+            <th>Transportador</th>
+            <th>Nome do Motorista</th>
+            <th>Placa Cavalo</th>
+            <th>Placa Carreta</th>
+            <th>Nome do Posto</th>
+            <th>Iscas</th>
+            <th>Cadeados</th>
+            <th>Data de Criação</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in pa %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.embarcador }}</td>
+            <td>{{ item.transportador }}</td>
+            <td>{{ item.nome_motorista }}</td>
+            <td>{{ item.placa_cavalo }}</td>
+            <td>{{ item.placa_carreta }}</td>
+            <td>{{ item.get_tipo_posto_display }}</td>
+            <td>{{ item.id_rastreador }}</td>
+            <td>{{ item.id_cadeado }}</td>
+            <td>{{ item.data_criacao }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8">Nenhuma parada encontrada.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if pa.has_previous %}
+            <a href="?page=1">&laquo; primeira</a>
+            <a href="?page={{ pa.previous_page_number }}">previous</a>
+        {% endif %}
+
+     
+
+        {% if pa.has_next %}
+            <a href="?page={{ pa.next_page_number }}">next</a>
+            <a href="?page={{ pa.paginator.num_pages }}">última &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}
